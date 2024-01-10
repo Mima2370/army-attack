@@ -52,5 +52,3 @@ def data(path):
     if not session["mod"]:
         session["mod"] = "none"
     return redirect(MODS_DIR + session["mod"] + "/data/" + path)
-
-app.run()
