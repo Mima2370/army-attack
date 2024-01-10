@@ -1,10 +1,10 @@
 from flask import Flask, render_template, request, redirect, session, send_from_directory
 import os
 from pathlib import Path
-app = Flask(__name__, template_folder=os.path.join(Path(__file__).parents[0], "armyattack"))
+app = Flask(__name__)
 app.secret_key = 'ARMYSECRET123'
 
-STYLES_DIR = os.path.join(Path(__file__).parents[0], "armyattack", "styles")
+STYLES_DIR = os.path.join(Path(__file__).parents[0], "templates", "styles")
 MODS_DIR = "https://mima2370.github.io/mods/"
 
 available_mods = ["colossal", "truecrimson", "crimson", "hardmode", "swapped", "swapped2"]
@@ -52,3 +52,5 @@ def data(path):
     if not session["mod"]:
         session["mod"] = "none"
     return redirect(MODS_DIR + session["mod"] + "/data/" + path)
+
+app.run()
