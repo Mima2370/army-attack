@@ -29,11 +29,11 @@ def play():
 
 @app.route('/crossdomain.xml')
 def cross():
-    return render_template(STYLES_DIR + "\\" + "crossdomain.xml")
+    return "<cross-domain-policy><site-control permitted-cross-domain-policies='all'/><allow-access-from domain='*'/><allow-http-request-headers-from domain='*' headers='*' secure='false'/></cross-domain-policy>"
 
 @app.route('/styles/<path:path>')
 def styles(path):
-    return render_template(STYLES_DIR + "\\" + path)
+    return redirect("https://mima2370.github.io/armyattack/styles/" + path)
 
 @app.route('/assets/<path:path>')
 def assets(path):
@@ -52,4 +52,3 @@ def data(path):
     if not session["mod"]:
         session["mod"] = "none"
     return redirect(MODS_DIR + session["mod"] + "/data/" + path)
-app.run()
