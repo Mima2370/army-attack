@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, session, send_from_
 import os
 from pathlib import Path
 app = Flask(__name__, template_folder=os.path.join(Path(__file__).parents[1], "armyattack"))
+app.secret_key = 'ARMYSECRET123'
 
 STYLES_DIR = os.path.join(Path(__file__).parents[1], "armyattack", "styles")
 MODS_DIR = os.path.join(Path(__file__).parents[1], "mods")
@@ -48,6 +49,3 @@ def data(path):
     if not session["mod"]:
         session["mod"] = "none"
     return send_from_directory(os.path.join(MODS_DIR, session["mod"], "data"), path)
-
-app.secret_key = 'ARMYSECRET123'
-app.run()
