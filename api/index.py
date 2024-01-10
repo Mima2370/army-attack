@@ -1,22 +1,52 @@
-from flask import Flask, render_template, redirect
-import scratchattach as scratch3
+from flask import Flask, render_template, request, redirect, session, send_from_directory
 import os
-app = Flask(__name__)
+from pathlib import Path
+app = Flask(__name__, template_folder=os.path.join(Path(__file__).parents[0], "armyattack"))
 
-session = scratch3.login(os.environ.get('Username'),os.environ.get('Password'))
+STYLES_DIR = os.path.join(Path(__file__).parents[0], "armyattack", "styles")
+MODS_DIR = os.path.join(Path(__file__).parents[0], "mods")
+
+available_mods = ["colossal", "truecrimson", "crimson", "hardmode", "swapped", "swapped2"]
 
 @app.route('/')
-def hello():
-    project = session.connect_project(project_id=764742970)
-    print(project.project_token)
-    return redirect("https://turbowarp.org/764742970?cloud_host=wss://cpwscloudserver-dev--cpwscratch.repl.co/&size=640x360&clones=Infinity&fps=60&hqpen&token=" + project.project_token, code=302)
+def homepage():
+    # Adding a homepage here one day
+    return redirect("./play")
 
+@app.route('/play')
+def play():
+    
+    if request.args.get('mod'):
+        mod = request.args.get('mod')
+        if mod in available_mods:
+            session["mod"] = mod
+        else:
+            return "Unknown mod. Please check your URL for spelling mistakes."
+    else:
+        session["mod"] = "none"
+    return render_template("index.html")
 
-@app.route('/test')
-def test():
-    return 'Test'
+@app.route('/styles/<path:path>')
+def styles(path):
+    print(path)
+    return send_from_directory(STYLES_DIR, path)
 
-@app.route('/result')
-def result():
-   dict = {'phy':50,'che':60,'maths':70}
-   return render_template('result.html', result = dict)
+@app.route('/assets/<path:path>')
+def assets(path):
+    if not session["mod"]:
+        session["mod"] = "none"
+    return send_from_directory(os.path.join(MODS_DIR, session["mod"], "assets"), path)
+
+@app.route('/config/<path:path>')
+def config(path):
+    if not session["mod"]:
+        session["mod"] = "none"
+    return send_from_directory(os.path.join(MODS_DIR, session["mod"], "config"), path)
+
+@app.route('/data/<path:path>')
+def data(path):
+    if not session["mod"]:
+        session["mod"] = "none"
+    return send_from_directory(os.path.join(MODS_DIR, session["mod"], "data"), path)
+
+app.run()
