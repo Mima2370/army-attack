@@ -1,11 +1,11 @@
 from flask import Flask, render_template, request, redirect, session, send_from_directory
 import os
 from pathlib import Path
-app = Flask(__name__, template_folder=os.path.join(Path(__file__).parents[1], "armyattack"))
+app = Flask(__name__, template_folder=os.path.join(Path(__file__).parents[0], "armyattack"))
 app.secret_key = 'ARMYSECRET123'
 
-STYLES_DIR = os.path.join(Path(__file__).parents[1], "armyattack", "styles")
-MODS_DIR = os.path.join(Path(__file__).parents[1], "mods")
+STYLES_DIR = os.path.join(Path(__file__).parents[0], "armyattack", "styles")
+MODS_DIR = "https://mima2370.github.io/mods/"
 
 available_mods = ["colossal", "truecrimson", "crimson", "hardmode", "swapped", "swapped2"]
 
@@ -27,25 +27,28 @@ def play():
         session["mod"] = "none"
     return render_template("index.html")
 
+@app.route('/crossdomain.xml')
+def cross():
+    return send_from_directory(STYLES_DIR, "crossdomain.xml")
+
 @app.route('/styles/<path:path>')
 def styles(path):
-    print(path)
     return send_from_directory(STYLES_DIR, path)
 
 @app.route('/assets/<path:path>')
 def assets(path):
     if not session["mod"]:
         session["mod"] = "none"
-    return send_from_directory(os.path.join(MODS_DIR, session["mod"], "assets"), path)
+    return redirect(MODS_DIR + session["mod"] + "/assets/" + path)
 
 @app.route('/config/<path:path>')
 def config(path):
     if not session["mod"]:
         session["mod"] = "none"
-    return send_from_directory(os.path.join(MODS_DIR, session["mod"], "config"), path)
+    return redirect(MODS_DIR + session["mod"] + "/config/" + path)
 
 @app.route('/data/<path:path>')
 def data(path):
     if not session["mod"]:
         session["mod"] = "none"
-    return send_from_directory(os.path.join(MODS_DIR, session["mod"], "data"), path)
+    return redirect(MODS_DIR + session["mod"] + "/data/" + path)
