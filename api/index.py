@@ -29,11 +29,11 @@ def play():
 
 @app.route('/crossdomain.xml')
 def cross():
-    return send_from_directory(STYLES_DIR, "crossdomain.xml")
+    return render_template(STYLES_DIR + "\\" + "crossdomain.xml")
 
 @app.route('/styles/<path:path>')
 def styles(path):
-    return send_from_directory(STYLES_DIR, path)
+    return render_template(STYLES_DIR + "\\" + path)
 
 @app.route('/assets/<path:path>')
 def assets(path):
@@ -52,3 +52,4 @@ def data(path):
     if not session["mod"]:
         session["mod"] = "none"
     return redirect(MODS_DIR + session["mod"] + "/data/" + path)
+app.run()
