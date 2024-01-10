@@ -1,7 +1,5 @@
 {
-  "functions": {
-    "api/**/*.py": {
-      "excludeFiles": "**/*.html"
-    }
-  }
+    "rewrites": [
+        { "source": "/(.*)", "destination": "/api/index" }
+    ]
 }
